@@ -13,6 +13,13 @@ const growthStage = document.querySelector("#growth-stage");
 const waterCount = document.querySelector("#water-count");
 const waterPlantButton = document.querySelector("#water-plant-button");
 const gardenStatus = document.querySelector("#garden-status");
+const taskFeedback = document.querySelector("#task-feedback");
+const plant = document.querySelector(".plant");
+const waterDropAnimation = document.querySelector("#water-drop-animation");
+const stageTooltip = document.querySelector("#stage-tooltip");
+const plantProgressTrack = document.querySelector("#plant-progress-track");
+const plantProgressFill = document.querySelector("#plant-progress-fill");
+const plantProgressCaption = document.querySelector("#plant-progress-caption");
 
 let nextTaskNumber = 4;
 let availableWaterDrops = 0;
@@ -49,6 +56,7 @@ function awardWaterDrop(checkbox) {
   if (checkbox.checked && checkbox.dataset.rewardEarned !== "true") {
     availableWaterDrops += 1;
     checkbox.dataset.rewardEarned = "true";
+    taskFeedback.textContent = "Wonderful! You earned a water drop for your plant. 💧";
     updateGardenDisplay();
   }
 }
@@ -68,8 +76,28 @@ function waterPlant() {
 
   availableWaterDrops -= 1;
   totalWaterings += 1;
+  playWaterDropAnimation();
+  const stageBeforeWatering = currentStage;
   advanceGrowthStage();
   updateGardenDisplay();
+
+  if (currentStage > stageBeforeWatering) {
+    playGrowthAnimation();
+  }
+}
+
+// Briefly show a falling water drop whenever the user waters the plant.
+function playWaterDropAnimation() {
+  waterDropAnimation.classList.remove("is-watering");
+  void waterDropAnimation.offsetWidth; // Restarts the animation for the next click.
+  waterDropAnimation.classList.add("is-watering");
+}
+
+// Highlight the plant only when it reaches a new stage.
+function playGrowthAnimation() {
+  plant.classList.remove("is-growing");
+  void plant.offsetWidth;
+  plant.classList.add("is-growing");
 }
 
 // Refresh all garden text, button state, and the plant illustration class.
@@ -81,7 +109,12 @@ function updateGardenDisplay() {
   waterCount.textContent = `💧 ${availableWaterDrops} ${dropWord} available`;
   gardenScene.className = `garden-scene ${stageClasses[currentStage]}`;
   gardenScene.setAttribute("aria-label", `${stages[currentStage]} in a warm brown pot`);
+  stageTooltip.textContent = `Current stage: ${stages[currentStage]}`;
   waterPlantButton.disabled = availableWaterDrops === 0 || isBlooming;
+  const growthPercent = Math.round((totalWaterings / 8) * 100);
+  plantProgressFill.style.width = `${growthPercent}%`;
+  plantProgressTrack.setAttribute("aria-valuenow", totalWaterings);
+  plantProgressCaption.textContent = `${totalWaterings} of 8 waterings toward Blooming Flower`;
 
   if (isBlooming) {
     gardenStatus.textContent = "Your plant is blooming! It has reached the final stage.";
@@ -142,6 +175,8 @@ taskList.addEventListener("click", function (event) {
 });
 
 waterPlantButton.addEventListener("click", waterPlant);
+waterDropAnimation.addEventListener("animationend", () => waterDropAnimation.classList.remove("is-watering"));
+plant.addEventListener("animationend", () => plant.classList.remove("is-growing"));
 
 // Show the correct task and garden information when the page first loads.
 updateTaskProgress();

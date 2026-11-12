@@ -174,6 +174,13 @@ h2 {
   text-decoration: line-through;
 }
 
+.task-feedback {
+  min-height: 1.45rem;
+  margin: 0.8rem 0 0;
+  color: var(--dark-leaf);
+  font-weight: 800;
+}
+
 .task-tag,
 .seedling-label {
   border-radius: 999px;
@@ -231,6 +238,11 @@ h2 {
   overflow: hidden;
   border-radius: 18px;
   background: linear-gradient(#dcefd7, #edf4dc);
+}
+
+.garden-scene:focus-visible {
+  outline: 3px solid rgba(91, 145, 173, 0.55);
+  outline-offset: 3px;
 }
 
 .sun {
@@ -369,6 +381,59 @@ h2 {
 .stage-blooming-flower .plant { transform: translateX(-50%) scale(1.12); }
 .stage-blooming-flower .flower { display: block; }
 
+.plant.is-growing {
+  animation: plant-celebrate 650ms ease-in-out;
+}
+
+@keyframes plant-celebrate {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.18) drop-shadow(0 0 9px rgba(245, 200, 107, 0.8)); }
+}
+
+.water-drop-animation {
+  position: absolute;
+  z-index: 3;
+  top: 22px;
+  left: 50%;
+  opacity: 0;
+  font-size: 1.7rem;
+  pointer-events: none;
+}
+
+.water-drop-animation.is-watering {
+  animation: water-drop 700ms ease-in forwards;
+}
+
+@keyframes water-drop {
+  0% { opacity: 0; transform: translate(-50%, -15px) scale(0.8); }
+  20% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, 145px) scale(0.55); }
+}
+
+.stage-tooltip {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  z-index: 4;
+  border-radius: 999px;
+  padding: 0.4rem 0.65rem;
+  color: var(--dark-leaf);
+  font-size: 0.8rem;
+  font-weight: 800;
+  opacity: 0;
+  transform: translateY(4px);
+  pointer-events: none;
+  transition: opacity 160ms ease, transform 160ms ease;
+  background: rgba(255, 253, 248, 0.92);
+}
+
+.garden-scene:hover .stage-tooltip,
+.garden-scene:focus-visible .stage-tooltip {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .water-controls {
   display: flex;
   align-items: center;
@@ -380,6 +445,29 @@ h2 {
 .water-count,
 .garden-status {
   margin-bottom: 0;
+  font-weight: 800;
+}
+
+.plant-progress-track {
+  height: 10px;
+  margin-top: 1rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--sage);
+}
+
+.plant-progress-fill {
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  transition: width 300ms ease;
+  background: #5b91ad;
+}
+
+.plant-progress-caption {
+  margin: 0.5rem 0 0;
+  color: #68786b;
+  font-size: 0.82rem;
   font-weight: 800;
 }
 
@@ -459,4 +547,14 @@ h2 {
   .task-item { align-items: flex-start; }
   .water-controls { align-items: flex-start; flex-direction: column; }
   .task-tag { white-space: nowrap; }
+}
+
+/* Keep feedback available without motion for visitors who prefer less movement. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
