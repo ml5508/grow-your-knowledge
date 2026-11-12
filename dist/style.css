@@ -76,6 +76,50 @@ h2 {
   line-height: 1.65;
 }
 
+.celebration {
+  position: relative;
+  display: none;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  border: 1px solid #e9c66e;
+  border-radius: 18px;
+  padding: 1rem 3.25rem;
+  color: var(--dark-leaf);
+  text-align: center;
+  font-weight: 800;
+  background: #fff1c9;
+}
+
+.celebration.is-visible { display: block; }
+.celebration p { margin: 0; }
+
+.confetti {
+  position: absolute;
+  color: #cf8361;
+  font-size: 1.25rem;
+}
+
+.confetti-one { top: 10px; left: 12%; }
+.confetti-two { right: 15%; bottom: 10px; color: #619a72; }
+.confetti-three { top: 14px; right: 8%; color: #5b91ad; }
+
+.celebration.is-animated {
+  animation: celebration-pop 600ms ease-out;
+}
+
+.celebration.is-animated .confetti {
+  animation: confetti-bounce 850ms ease-in-out 2;
+}
+
+@keyframes celebration-pop {
+  0% { opacity: 0; transform: translateY(10px) scale(0.96); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes confetti-bounce {
+  50% { transform: translateY(-8px) rotate(18deg); }
+}
+
 .content-card {
   border: 1px solid rgba(97, 154, 114, 0.18);
   border-radius: 24px;

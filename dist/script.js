@@ -21,6 +21,7 @@ const stageTooltip = document.querySelector("#stage-tooltip");
 const plantProgressTrack = document.querySelector("#plant-progress-track");
 const plantProgressFill = document.querySelector("#plant-progress-fill");
 const plantProgressCaption = document.querySelector("#plant-progress-caption");
+const celebration = document.querySelector("#celebration");
 
 const storageKey = "growYourKnowledgeState";
 const stages = ["Seed", "Sprout", "Small Plant", "Growing Plant", "Blooming Flower"];
@@ -37,10 +38,11 @@ let tasks = starterTasks.map((task) => ({ ...task }));
 let availableWaterDrops = 0;
 let totalWaterings = 0;
 let currentStage = 0;
+let celebrationShown = false;
 
 // Save the complete task and garden state after each meaningful change.
 function saveState() {
-  const savedState = { tasks, availableWaterDrops, totalWaterings, currentStage };
+  const savedState = { tasks, availableWaterDrops, totalWaterings, currentStage, celebrationShown };
   localStorage.setItem(storageKey, JSON.stringify(savedState));
 }
 
@@ -54,6 +56,7 @@ function loadState() {
       availableWaterDrops = Math.max(0, Number(savedState.availableWaterDrops) || 0);
       totalWaterings = Math.min(8, Math.max(0, Number(savedState.totalWaterings) || 0));
       currentStage = Math.min(stages.length - 1, Math.max(0, Number(savedState.currentStage) || 0));
+      celebrationShown = savedState.celebrationShown === true;
     }
   } catch (error) {
     console.warn("Saved garden data could not be loaded. Starting fresh.");
@@ -119,6 +122,30 @@ function updateTaskProgress() {
   }
 }
 
+// The celebration needs BOTH goals: a non-empty, fully completed task list and a blooming plant.
+function checkForCelebration() {
+  const allTasksComplete = tasks.length > 0 && tasks.every((task) => task.completed);
+  const plantIsBlooming = currentStage === stages.length - 1;
+  const goalsReached = allTasksComplete && plantIsBlooming;
+
+  if (!goalsReached) {
+    celebration.classList.remove("is-visible", "is-animated");
+    celebration.setAttribute("aria-hidden", "true");
+    return;
+  }
+
+  celebration.classList.add("is-visible");
+  celebration.setAttribute("aria-hidden", "false");
+
+  if (!celebrationShown) {
+    celebrationShown = true;
+    celebration.classList.remove("is-animated");
+    void celebration.offsetWidth; // Restart the animation only for the first celebration.
+    celebration.classList.add("is-animated");
+    taskFeedback.textContent = "Amazing work! You completed your tasks and grew a blooming flower.";
+  }
+}
+
 // A task earns its water-drop reward just once, even if it is checked again.
 function awardWaterDrop(task) {
   if (task.completed && !task.rewardEarned) {
@@ -156,6 +183,7 @@ function waterPlant() {
     playGrowthAnimation();
   }
 
+  checkForCelebration();
   saveState();
 }
 
@@ -212,6 +240,7 @@ function addTask(taskText) {
   taskFeedback.textContent = "Your new learning task has been added.";
   renderTasks();
   updateTaskProgress();
+  checkForCelebration();
   saveState();
 }
 
@@ -220,6 +249,7 @@ function deleteTask(taskId) {
   taskFeedback.textContent = "Task deleted. Any water drop it already earned stays in your garden.";
   renderTasks();
   updateTaskProgress();
+  checkForCelebration();
   saveState();
 }
 
@@ -231,8 +261,10 @@ function resetGarden() {
     availableWaterDrops = 0;
     totalWaterings = 0;
     currentStage = 0;
+    celebrationShown = false;
     taskFeedback.textContent = "Your garden was reset. Your learning tasks are still here.";
     updateGardenDisplay();
+    checkForCelebration();
     saveState();
   }
 }
@@ -253,6 +285,7 @@ taskList.addEventListener("change", (event) => {
       awardWaterDrop(task);
       updateTaskProgress();
       updateGardenDisplay();
+      checkForCelebration();
       saveState();
     }
   }
@@ -274,3 +307,4 @@ loadState();
 renderTasks();
 updateTaskProgress();
 updateGardenDisplay();
+checkForCelebration();
