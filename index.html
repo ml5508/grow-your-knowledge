@@ -33,30 +33,12 @@
       <!-- Typing a task here and submitting the form adds it to the list below. -->
       <form id="task-form" class="task-form">
         <label class="sr-only" for="task-input">New learning task</label>
-        <input id="task-input" type="text" placeholder="What would you like to learn today?" maxlength="100" required>
+        <input id="task-input" type="text" placeholder="What would you like to learn today?" maxlength="100">
         <button class="add-task-button" type="submit">+ Add task</button>
       </form>
 
-      <ul id="task-list" class="task-list">
-        <li class="task-item">
-          <input id="task-1" type="checkbox">
-          <label for="task-1">Review JavaScript variables</label>
-          <span class="task-tag">20 min</span>
-          <button class="delete-task-button" type="button" aria-label="Delete Review JavaScript variables">Delete</button>
-        </li>
-        <li class="task-item">
-          <input id="task-2" type="checkbox">
-          <label for="task-2">Finish programming lab exercise</label>
-          <span class="task-tag">45 min</span>
-          <button class="delete-task-button" type="button" aria-label="Delete Finish programming lab exercise">Delete</button>
-        </li>
-        <li class="task-item">
-          <input id="task-3" type="checkbox">
-          <label for="task-3">Read chapter notes</label>
-          <span class="task-tag">15 min</span>
-          <button class="delete-task-button" type="button" aria-label="Delete Read chapter notes">Delete</button>
-        </li>
-      </ul>
+      <!-- JavaScript fills this list with saved tasks when the page loads. -->
+      <ul id="task-list" class="task-list"></ul>
       <p id="task-feedback" class="task-feedback" aria-live="polite"></p>
     </section>
 
@@ -91,7 +73,10 @@
         <p class="garden-note">Complete a task to earn a water drop, then use it to care for your plant.</p>
         <div class="water-controls">
           <p id="water-count" class="water-count" aria-live="polite">💧 0 water drops available</p>
-          <button id="water-plant-button" class="water-plant-button" type="button">Water Plant</button>
+          <div class="water-actions">
+            <button id="water-plant-button" class="water-plant-button" type="button">Water Plant</button>
+            <button id="reset-garden-button" class="reset-garden-button" type="button">Reset Garden</button>
+          </div>
         </div>
         <p id="garden-status" class="garden-status" aria-live="polite">Water twice to grow from Seed to Sprout.</p>
         <div id="plant-progress-track" class="plant-progress-track" role="progressbar" aria-label="Plant growth progress" aria-valuemin="0" aria-valuemax="8" aria-valuenow="0">

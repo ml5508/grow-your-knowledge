@@ -442,6 +442,13 @@ h2 {
   margin-top: 1rem;
 }
 
+.water-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
 .water-count,
 .garden-status {
   margin-bottom: 0;
@@ -495,6 +502,19 @@ h2 {
 .water-plant-button:hover { background: #3d718a; }
 .water-plant-button:disabled { cursor: not-allowed; opacity: 0.5; }
 
+.reset-garden-button {
+  border: 1px solid #c98872;
+  border-radius: 999px;
+  padding: 0.7rem 0.85rem;
+  color: #934f3d;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  background: transparent;
+}
+
+.reset-garden-button:hover { background: #fff0e7; }
+
 .garden-note,
 .progress-message,
 .progress-caption {
@@ -546,6 +566,7 @@ h2 {
   .task-form { flex-direction: column; }
   .task-item { align-items: flex-start; }
   .water-controls { align-items: flex-start; flex-direction: column; }
+  .water-actions { justify-content: flex-start; }
   .task-tag { white-space: nowrap; }
 }
 
