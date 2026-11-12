@@ -76,50 +76,6 @@ h2 {
   line-height: 1.65;
 }
 
-.celebration {
-  position: relative;
-  display: none;
-  overflow: hidden;
-  margin-bottom: 1.5rem;
-  border: 1px solid #e9c66e;
-  border-radius: 18px;
-  padding: 1rem 3.25rem;
-  color: var(--dark-leaf);
-  text-align: center;
-  font-weight: 800;
-  background: #fff1c9;
-}
-
-.celebration.is-visible { display: block; }
-.celebration p { margin: 0; }
-
-.confetti {
-  position: absolute;
-  color: #cf8361;
-  font-size: 1.25rem;
-}
-
-.confetti-one { top: 10px; left: 12%; }
-.confetti-two { right: 15%; bottom: 10px; color: #619a72; }
-.confetti-three { top: 14px; right: 8%; color: #5b91ad; }
-
-.celebration.is-animated {
-  animation: celebration-pop 600ms ease-out;
-}
-
-.celebration.is-animated .confetti {
-  animation: confetti-bounce 850ms ease-in-out 2;
-}
-
-@keyframes celebration-pop {
-  0% { opacity: 0; transform: translateY(10px) scale(0.96); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-@keyframes confetti-bounce {
-  50% { transform: translateY(-8px) rotate(18deg); }
-}
-
 .content-card {
   border: 1px solid rgba(97, 154, 114, 0.18);
   border-radius: 24px;
@@ -169,9 +125,9 @@ h2 {
   margin-top: 1.5rem;
 }
 
-.task-form input,
-.task-form select {
+.task-form input {
   min-width: 0;
+  flex: 1;
   border: 1px solid #cadfc4;
   border-radius: 12px;
   padding: 0.75rem 0.9rem;
@@ -180,20 +136,7 @@ h2 {
   background: white;
 }
 
-.task-form input { flex: 1; }
-
-.task-form select {
-  min-width: 110px;
-  cursor: pointer;
-}
-
-.task-form .custom-task-time {
-  width: 105px;
-  flex: 0 1 105px;
-}
-
-.task-form input:focus,
-.task-form select:focus {
+.task-form input:focus {
   outline: 3px solid rgba(97, 154, 114, 0.25);
   border-color: var(--leaf);
 }
@@ -229,13 +172,6 @@ h2 {
 .task-item:has(input:checked) label {
   color: #718073;
   text-decoration: line-through;
-}
-
-.task-feedback {
-  min-height: 1.45rem;
-  margin: 0.8rem 0 0;
-  color: var(--dark-leaf);
-  font-weight: 800;
 }
 
 .task-tag,
@@ -295,12 +231,6 @@ h2 {
   overflow: hidden;
   border-radius: 18px;
   background: linear-gradient(#dcefd7, #edf4dc);
-  transition: background 400ms ease, box-shadow 400ms ease;
-}
-
-.garden-scene:focus-visible {
-  outline: 3px solid rgba(91, 145, 173, 0.55);
-  outline-offset: 3px;
 }
 
 .sun {
@@ -311,7 +241,6 @@ h2 {
   height: 48px;
   border-radius: 50%;
   background: #f5c86b;
-  transition: transform 400ms ease, opacity 400ms ease, background 400ms ease, box-shadow 400ms ease;
 }
 
 .cloud {
@@ -321,7 +250,6 @@ h2 {
   border-radius: 20px;
   opacity: 0.8;
   background: white;
-  transition: opacity 400ms ease;
 }
 
 .cloud::before,
@@ -348,7 +276,6 @@ h2 {
   height: 54px;
   border-radius: 50% 50% 0 0 / 25% 25% 0 0;
   background: #b9d59a;
-  transition: background 400ms ease;
 }
 
 .plant {
@@ -407,10 +334,7 @@ h2 {
 .plant {
   transform: translateX(-50%) scale(1);
   transform-origin: bottom center;
-  transition: transform 0.35s ease, filter 0.25s ease;
-  --sunlight-filter: brightness(1);
-  --mood-filter: brightness(1);
-  filter: var(--sunlight-filter) var(--mood-filter);
+  transition: transform 0.35s ease;
 }
 
 .flower {
@@ -445,78 +369,6 @@ h2 {
 .stage-blooming-flower .plant { transform: translateX(-50%) scale(1.12); }
 .stage-blooming-flower .flower { display: block; }
 
-.plant.is-growing {
-  animation: plant-celebrate 650ms ease-in-out;
-}
-
-@keyframes plant-celebrate {
-  0%, 100% { filter: brightness(1); }
-  50% { filter: brightness(1.18) drop-shadow(0 0 9px rgba(245, 200, 107, 0.8)); }
-}
-
-.water-drop-animation {
-  position: absolute;
-  z-index: 3;
-  top: 22px;
-  left: 50%;
-  opacity: 0;
-  font-size: 1.7rem;
-  pointer-events: none;
-}
-
-.water-drop-animation.is-watering {
-  animation: water-drop 700ms ease-in forwards;
-}
-
-@keyframes water-drop {
-  0% { opacity: 0; transform: translate(-50%, -15px) scale(0.8); }
-  20% { opacity: 1; }
-  85% { opacity: 1; }
-  100% { opacity: 0; transform: translate(-50%, 145px) scale(0.55); }
-}
-
-.stage-tooltip {
-  position: absolute;
-  right: 14px;
-  bottom: 14px;
-  z-index: 4;
-  border-radius: 999px;
-  padding: 0.4rem 0.65rem;
-  color: var(--dark-leaf);
-  font-size: 0.8rem;
-  font-weight: 800;
-  opacity: 0;
-  transform: translateY(4px);
-  pointer-events: none;
-  transition: opacity 160ms ease, transform 160ms ease;
-  background: rgba(255, 253, 248, 0.92);
-}
-
-.garden-scene:hover .stage-tooltip,
-.garden-scene:focus-visible .stage-tooltip {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.mood-proud .plant { --mood-filter: drop-shadow(0 0 7px rgba(245, 200, 107, 0.8)); }
-.mood-refreshed .plant { --mood-filter: saturate(1.2) drop-shadow(0 0 6px rgba(91, 145, 173, 0.5)); }
-.sunlight-low { background: linear-gradient(#8eacc1, #d7e2d5); box-shadow: inset 0 0 70px rgba(57, 86, 111, 0.32); }
-.sunlight-low .sun { opacity: 0.38; transform: scale(0.62); background: #d1bd82; }
-.sunlight-low .cloud { opacity: 1; }
-.sunlight-low .ground { background: #9dbb98; }
-.sunlight-low .plant { --sunlight-filter: saturate(0.72) brightness(0.92); }
-.sunlight-gentle { background: linear-gradient(#dcefd7, #edf4dc); box-shadow: inset 0 0 45px rgba(255, 249, 205, 0.25); }
-.sunlight-bright { background: linear-gradient(#b8e675, #f4f2b7); box-shadow: inset 0 0 60px rgba(255, 230, 111, 0.48); }
-.sunlight-bright .sun { background: #ffd15d; box-shadow: 0 0 0 10px rgba(255, 220, 92, 0.35), 0 0 0 20px rgba(255, 236, 144, 0.2), 0 0 30px rgba(245, 188, 54, 0.95); animation: sunshine-pulse 1.2s ease-in-out infinite; }
-.sunlight-bright .plant { --sunlight-filter: saturate(1.38) brightness(1.13); }
-.sunlight-bright .ground { background: #a9d07c; }
-@keyframes sunshine-pulse { 50% { transform: scale(1.22); } }
-.sunlight-controls { display: grid; grid-template-columns: auto minmax(120px, 1fr); align-items: center; gap: 0.35rem 1rem; margin-top: 1rem; }
-.sunlight-controls label, .sunlight-value, .plant-mood-status { font-weight: 800; }
-.sunlight-value { margin: 0.2rem 0 0; color: #68786b; font-size: 0.82rem; }
-.sunlight-controls input { width: 100%; accent-color: #f5c86b; }
-.plant-mood-status { margin: 0.75rem 0 0; color: var(--dark-leaf); line-height: 1.45; }
-
 .water-controls {
   display: flex;
   align-items: center;
@@ -525,39 +377,9 @@ h2 {
   margin-top: 1rem;
 }
 
-.water-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  justify-content: flex-end;
-}
-
 .water-count,
 .garden-status {
   margin-bottom: 0;
-  font-weight: 800;
-}
-
-.plant-progress-track {
-  height: 10px;
-  margin-top: 1rem;
-  overflow: hidden;
-  border-radius: 999px;
-  background: var(--sage);
-}
-
-.plant-progress-fill {
-  width: 0;
-  height: 100%;
-  border-radius: inherit;
-  transition: width 300ms ease;
-  background: #5b91ad;
-}
-
-.plant-progress-caption {
-  margin: 0.5rem 0 0;
-  color: #68786b;
-  font-size: 0.82rem;
   font-weight: 800;
 }
 
@@ -584,19 +406,6 @@ h2 {
 
 .water-plant-button:hover { background: #3d718a; }
 .water-plant-button:disabled { cursor: not-allowed; opacity: 0.5; }
-
-.reset-garden-button {
-  border: 1px solid #c98872;
-  border-radius: 999px;
-  padding: 0.7rem 0.85rem;
-  color: #934f3d;
-  font: inherit;
-  font-weight: 800;
-  cursor: pointer;
-  background: transparent;
-}
-
-.reset-garden-button:hover { background: #fff0e7; }
 
 .garden-note,
 .progress-message,
@@ -647,20 +456,7 @@ h2 {
 @media (max-width: 430px) {
   .section-heading { align-items: flex-start; flex-direction: column; }
   .task-form { flex-direction: column; }
-  .task-form select { width: 100%; }
   .task-item { align-items: flex-start; }
   .water-controls { align-items: flex-start; flex-direction: column; }
-  .sunlight-controls { grid-template-columns: 1fr; }
-  .water-actions { justify-content: flex-start; }
   .task-tag { white-space: nowrap; }
-}
-
-/* Keep feedback available without motion for visitors who prefer less movement. */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    scroll-behavior: auto !important;
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
 }

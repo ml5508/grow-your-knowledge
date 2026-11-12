@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Grow Your Knowledge learning garden">
+  <title>Grow Your Knowledge</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="page-container">
+    <!-- Introductory header for the project. -->
+    <header class="hero">
+      <p class="eyebrow">A gentle study companion</p>
+      <h1>Grow Your Knowledge</h1>
+      <p class="hero-description">
+        Small learning steps can grow into something wonderful. Keep track of your tasks and watch your garden flourish.
+      </p>
+    </header>
+
+    <section class="content-card tasks-section" aria-labelledby="tasks-heading">
+      <div class="section-heading">
+        <div>
+          <p class="section-label">Today’s plan</p>
+          <h2 id="tasks-heading">My Learning Tasks</h2>
+        </div>
+        <p id="completed-count" class="completed-count" aria-live="polite">0 completed</p>
+      </div>
+
+      <!-- Typing a task here and submitting the form adds it to the list below. -->
+      <form id="task-form" class="task-form">
+        <label class="sr-only" for="task-input">New learning task</label>
+        <input id="task-input" type="text" placeholder="What would you like to learn today?" maxlength="100" required>
+        <button class="add-task-button" type="submit">+ Add task</button>
+      </form>
+
+      <ul id="task-list" class="task-list">
+        <li class="task-item">
+          <input id="task-1" type="checkbox">
+          <label for="task-1">Review JavaScript variables</label>
+          <span class="task-tag">20 min</span>
+          <button class="delete-task-button" type="button" aria-label="Delete Review JavaScript variables">Delete</button>
+        </li>
+        <li class="task-item">
+          <input id="task-2" type="checkbox">
+          <label for="task-2">Finish programming lab exercise</label>
+          <span class="task-tag">45 min</span>
+          <button class="delete-task-button" type="button" aria-label="Delete Finish programming lab exercise">Delete</button>
+        </li>
+        <li class="task-item">
+          <input id="task-3" type="checkbox">
+          <label for="task-3">Read chapter notes</label>
+          <span class="task-tag">15 min</span>
+          <button class="delete-task-button" type="button" aria-label="Delete Read chapter notes">Delete</button>
+        </li>
+      </ul>
+    </section>
+
+    <section class="garden-layout" aria-label="Learning garden and progress">
+      <article class="content-card garden-section" aria-labelledby="garden-heading">
+        <div class="section-heading">
+          <div>
+            <p class="section-label">Your little corner</p>
+            <h2 id="garden-heading">My Learning Garden</h2>
+          </div>
+          <span id="growth-stage" class="seedling-label" aria-live="polite">Seed</span>
+        </div>
+
+        <!-- A simple plant illustration made with HTML and CSS. -->
+        <div id="garden-scene" class="garden-scene stage-seed" role="img" aria-label="A seed in a warm brown pot">
+          <span class="sun"></span>
+          <span class="cloud cloud-one"></span>
+          <span class="cloud cloud-two"></span>
+          <div class="plant">
+            <span class="leaf leaf-left"></span>
+            <span class="leaf leaf-right"></span>
+            <span class="leaf leaf-top"></span>
+            <span class="flower" aria-hidden="true">✿</span>
+            <span class="stem"></span>
+            <span class="pot-rim"></span>
+            <span class="pot"></span>
+          </div>
+          <span class="ground"></span>
+        </div>
+        <p class="garden-note">Complete a task to earn a water drop, then use it to care for your plant.</p>
+        <div class="water-controls">
+          <p id="water-count" class="water-count" aria-live="polite">💧 0 water drops available</p>
+          <button id="water-plant-button" class="water-plant-button" type="button">Water Plant</button>
+        </div>
+        <p id="garden-status" class="garden-status" aria-live="polite">Water twice to grow from Seed to Sprout.</p>
+      </article>
+
+      <aside class="content-card progress-section" aria-labelledby="progress-heading">
+        <p class="section-label">Keep going</p>
+        <h2 id="progress-heading">Your Progress</h2>
+        <div id="progress-number" class="progress-number">0<span>%</span></div>
+        <p id="progress-message" class="progress-message">Complete a task to begin growing your garden.</p>
+
+        <!-- The width will be updated later when progress features are added. -->
+        <div id="progress-track" class="progress-track" role="progressbar" aria-label="Learning progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div id="progress-fill" class="progress-fill"></div>
+        </div>
+        <p id="progress-caption" class="progress-caption">0 of 3 tasks completed</p>
+      </aside>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

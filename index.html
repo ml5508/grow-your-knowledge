@@ -12,14 +12,6 @@
 </head>
 <body>
   <main class="page-container">
-    <!-- This appears only after both learning and garden goals are reached. -->
-    <section id="celebration" class="celebration" role="status" aria-live="polite" aria-hidden="true">
-      <span class="confetti confetti-one" aria-hidden="true">✦</span>
-      <span class="confetti confetti-two" aria-hidden="true">●</span>
-      <span class="confetti confetti-three" aria-hidden="true">✦</span>
-      <p>🎉 You did it! Every learning task is complete and your garden is blooming.</p>
-    </section>
-
     <!-- Introductory header for the project. -->
     <header class="hero">
       <p class="eyebrow">A gentle study companion</p>
@@ -41,26 +33,30 @@
       <!-- Typing a task here and submitting the form adds it to the list below. -->
       <form id="task-form" class="task-form">
         <label class="sr-only" for="task-input">New learning task</label>
-        <input id="task-input" type="text" placeholder="What would you like to learn today?" maxlength="100">
-        <label class="sr-only" for="task-time">Estimated learning time</label>
-        <select id="task-time" aria-describedby="task-time-help">
-          <option value="">Choose time</option>
-          <option value="20 min">20 min</option>
-          <option value="30 min">30 min</option>
-          <option value="40 min">40 min</option>
-          <option value="50 min">50 min</option>
-          <option value="60 min">60 min</option>
-          <option value="custom">Custom time…</option>
-        </select>
-        <label class="sr-only" for="custom-task-time">Custom time in minutes</label>
-        <input id="custom-task-time" class="custom-task-time" type="number" min="1" max="600" step="1" placeholder="Minutes" inputmode="numeric" hidden>
-        <span id="task-time-help" class="sr-only">Choose the estimated time for this learning task.</span>
+        <input id="task-input" type="text" placeholder="What would you like to learn today?" maxlength="100" required>
         <button class="add-task-button" type="submit">+ Add task</button>
       </form>
 
-      <!-- JavaScript fills this list with saved tasks when the page loads. -->
-      <ul id="task-list" class="task-list"></ul>
-      <p id="task-feedback" class="task-feedback" aria-live="polite"></p>
+      <ul id="task-list" class="task-list">
+        <li class="task-item">
+          <input id="task-1" type="checkbox">
+          <label for="task-1">Review JavaScript variables</label>
+          <span class="task-tag">20 min</span>
+          <button class="delete-task-button" type="button" aria-label="Delete Review JavaScript variables">Delete</button>
+        </li>
+        <li class="task-item">
+          <input id="task-2" type="checkbox">
+          <label for="task-2">Finish programming lab exercise</label>
+          <span class="task-tag">45 min</span>
+          <button class="delete-task-button" type="button" aria-label="Delete Finish programming lab exercise">Delete</button>
+        </li>
+        <li class="task-item">
+          <input id="task-3" type="checkbox">
+          <label for="task-3">Read chapter notes</label>
+          <span class="task-tag">15 min</span>
+          <button class="delete-task-button" type="button" aria-label="Delete Read chapter notes">Delete</button>
+        </li>
+      </ul>
     </section>
 
     <section class="garden-layout" aria-label="Learning garden and progress">
@@ -74,7 +70,7 @@
         </div>
 
         <!-- A simple plant illustration made with HTML and CSS. -->
-        <div id="garden-scene" class="garden-scene stage-seed" role="img" aria-label="A seed in a warm brown pot" tabindex="0">
+        <div id="garden-scene" class="garden-scene stage-seed" role="img" aria-label="A seed in a warm brown pot">
           <span class="sun"></span>
           <span class="cloud cloud-one"></span>
           <span class="cloud cloud-two"></span>
@@ -88,31 +84,13 @@
             <span class="pot"></span>
           </div>
           <span class="ground"></span>
-          <span id="stage-tooltip" class="stage-tooltip">Current stage: Seed</span>
-          <span id="water-drop-animation" class="water-drop-animation" aria-hidden="true">💧</span>
         </div>
         <p class="garden-note">Complete a task to earn a water drop, then use it to care for your plant.</p>
-        <div class="sunlight-controls">
-          <div>
-            <label for="sunlight-slider">Sunlight</label>
-            <p id="sunlight-value" class="sunlight-value">Gentle sunlight</p>
-          </div>
-          <input id="sunlight-slider" type="range" min="0" max="100" value="50" aria-describedby="sunlight-help">
-          <span id="sunlight-help" class="sr-only">Move the slider to choose how much sunlight the plant receives.</span>
-        </div>
-        <p id="plant-mood-status" class="plant-mood-status" aria-live="polite">Plant feeling: Resting — a quiet moment is okay.</p>
         <div class="water-controls">
           <p id="water-count" class="water-count" aria-live="polite">💧 0 water drops available</p>
-          <div class="water-actions">
-            <button id="water-plant-button" class="water-plant-button" type="button">Water Plant</button>
-            <button id="reset-garden-button" class="reset-garden-button" type="button">Reset Garden</button>
-          </div>
+          <button id="water-plant-button" class="water-plant-button" type="button">Water Plant</button>
         </div>
         <p id="garden-status" class="garden-status" aria-live="polite">Water twice to grow from Seed to Sprout.</p>
-        <div id="plant-progress-track" class="plant-progress-track" role="progressbar" aria-label="Plant growth progress" aria-valuemin="0" aria-valuemax="8" aria-valuenow="0">
-          <div id="plant-progress-fill" class="plant-progress-fill"></div>
-        </div>
-        <p id="plant-progress-caption" class="plant-progress-caption">0 of 8 waterings toward Blooming Flower</p>
       </article>
 
       <aside class="content-card progress-section" aria-labelledby="progress-heading">
