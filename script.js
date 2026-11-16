@@ -1,6 +1,8 @@
 // Grow Your Knowledge keeps its state in the browser, so it remains after refreshes.
 const taskForm = document.querySelector("#task-form");
 const taskInput = document.querySelector("#task-input");
+const taskTime = document.querySelector("#task-time");
+const customTaskTime = document.querySelector("#custom-task-time");
 const taskList = document.querySelector("#task-list");
 const completedCount = document.querySelector("#completed-count");
 const progressNumber = document.querySelector("#progress-number");
@@ -21,6 +23,7 @@ const stageTooltip = document.querySelector("#stage-tooltip");
 const plantProgressTrack = document.querySelector("#plant-progress-track");
 const plantProgressFill = document.querySelector("#plant-progress-fill");
 const plantProgressCaption = document.querySelector("#plant-progress-caption");
+const celebration = document.querySelector("#celebration");
 
 const storageKey = "growYourKnowledgeState";
 const stages = ["Seed", "Sprout", "Small Plant", "Growing Plant", "Blooming Flower"];
@@ -37,10 +40,11 @@ let tasks = starterTasks.map((task) => ({ ...task }));
 let availableWaterDrops = 0;
 let totalWaterings = 0;
 let currentStage = 0;
+let celebrationShown = false;
 
 // Save the complete task and garden state after each meaningful change.
 function saveState() {
-  const savedState = { tasks, availableWaterDrops, totalWaterings, currentStage };
+  const savedState = { tasks, availableWaterDrops, totalWaterings, currentStage, celebrationShown };
   localStorage.setItem(storageKey, JSON.stringify(savedState));
 }
 
@@ -54,6 +58,7 @@ function loadState() {
       availableWaterDrops = Math.max(0, Number(savedState.availableWaterDrops) || 0);
       totalWaterings = Math.min(8, Math.max(0, Number(savedState.totalWaterings) || 0));
       currentStage = Math.min(stages.length - 1, Math.max(0, Number(savedState.currentStage) || 0));
+      celebrationShown = savedState.celebrationShown === true;
     }
   } catch (error) {
     console.warn("Saved garden data could not be loaded. Starting fresh.");
@@ -119,6 +124,30 @@ function updateTaskProgress() {
   }
 }
 
+// The celebration needs BOTH goals: a non-empty, fully completed task list and a blooming plant.
+function checkForCelebration() {
+  const allTasksComplete = tasks.length > 0 && tasks.every((task) => task.completed);
+  const plantIsBlooming = currentStage === stages.length - 1;
+  const goalsReached = allTasksComplete && plantIsBlooming;
+
+  if (!goalsReached) {
+    celebration.classList.remove("is-visible", "is-animated");
+    celebration.setAttribute("aria-hidden", "true");
+    return;
+  }
+
+  celebration.classList.add("is-visible");
+  celebration.setAttribute("aria-hidden", "false");
+
+  if (!celebrationShown) {
+    celebrationShown = true;
+    celebration.classList.remove("is-animated");
+    void celebration.offsetWidth; // Restart the animation only for the first celebration.
+    celebration.classList.add("is-animated");
+    taskFeedback.textContent = "Amazing work! You completed your tasks and grew a blooming flower.";
+  }
+}
+
 // A task earns its water-drop reward just once, even if it is checked again.
 function awardWaterDrop(task) {
   if (task.completed && !task.rewardEarned) {
@@ -156,6 +185,7 @@ function waterPlant() {
     playGrowthAnimation();
   }
 
+  checkForCelebration();
   saveState();
 }
 
@@ -194,25 +224,58 @@ function updateGardenDisplay() {
   }
 }
 
-function addTask(taskText) {
+function addTask(taskText, timeText) {
   const cleanText = taskText.trim();
 
   if (cleanText === "") {
     taskFeedback.textContent = "Please type a learning task before adding it.";
-    return;
+    return false;
+  }
+
+  if (timeText === "") {
+    taskFeedback.textContent = "Please choose an estimated learning time.";
+    return false;
   }
 
   tasks.push({
     id: `task-${Date.now()}`,
     text: cleanText,
-    tag: "",
+    tag: timeText,
     completed: false,
     rewardEarned: false
   });
   taskFeedback.textContent = "Your new learning task has been added.";
   renderTasks();
   updateTaskProgress();
+  checkForCelebration();
   saveState();
+  return true;
+}
+
+// Return the selected time label. Custom time is entered as a number of minutes.
+function getSelectedTaskTime() {
+  if (taskTime.value !== "custom") {
+    return taskTime.value;
+  }
+
+  const customMinutes = Number(customTaskTime.value);
+
+  if (!Number.isInteger(customMinutes) || customMinutes < 1 || customMinutes > 600) {
+    taskFeedback.textContent = "Please enter a custom time from 1 to 600 minutes.";
+    return "";
+  }
+
+  return `${customMinutes} min`;
+}
+
+// Show the custom-minutes box only when the user chooses Custom time.
+function updateCustomTimeInput() {
+  const isCustomTime = taskTime.value === "custom";
+  customTaskTime.hidden = !isCustomTime;
+
+  if (!isCustomTime) {
+    customTaskTime.value = "";
+  }
 }
 
 function deleteTask(taskId) {
@@ -220,6 +283,7 @@ function deleteTask(taskId) {
   taskFeedback.textContent = "Task deleted. Any water drop it already earned stays in your garden.";
   renderTasks();
   updateTaskProgress();
+  checkForCelebration();
   saveState();
 }
 
@@ -231,18 +295,30 @@ function resetGarden() {
     availableWaterDrops = 0;
     totalWaterings = 0;
     currentStage = 0;
+    celebrationShown = false;
     taskFeedback.textContent = "Your garden was reset. Your learning tasks are still here.";
     updateGardenDisplay();
+    checkForCelebration();
     saveState();
   }
 }
 
 taskForm.addEventListener("submit", (event) => {
   event.preventDefault();
-  addTask(taskInput.value);
-  taskInput.value = "";
-  taskInput.focus();
+  const selectedTime = getSelectedTaskTime();
+  const wasTaskAdded = addTask(taskInput.value, selectedTime);
+
+  // Clear the form only after a new task has actually been added.
+  if (wasTaskAdded) {
+    taskInput.value = "";
+    taskTime.value = "";
+    customTaskTime.value = "";
+    updateCustomTimeInput();
+    taskInput.focus();
+  }
 });
+
+taskTime.addEventListener("change", updateCustomTimeInput);
 
 taskList.addEventListener("change", (event) => {
   if (event.target.matches('input[type="checkbox"]')) {
@@ -253,6 +329,7 @@ taskList.addEventListener("change", (event) => {
       awardWaterDrop(task);
       updateTaskProgress();
       updateGardenDisplay();
+      checkForCelebration();
       saveState();
     }
   }
@@ -274,3 +351,5 @@ loadState();
 renderTasks();
 updateTaskProgress();
 updateGardenDisplay();
+checkForCelebration();
+updateCustomTimeInput();

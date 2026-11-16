@@ -12,6 +12,14 @@
 </head>
 <body>
   <main class="page-container">
+    <!-- This appears only after both learning and garden goals are reached. -->
+    <section id="celebration" class="celebration" role="status" aria-live="polite" aria-hidden="true">
+      <span class="confetti confetti-one" aria-hidden="true">✦</span>
+      <span class="confetti confetti-two" aria-hidden="true">●</span>
+      <span class="confetti confetti-three" aria-hidden="true">✦</span>
+      <p>🎉 You did it! Every learning task is complete and your garden is blooming.</p>
+    </section>
+
     <!-- Introductory header for the project. -->
     <header class="hero">
       <p class="eyebrow">A gentle study companion</p>
@@ -34,6 +42,19 @@
       <form id="task-form" class="task-form">
         <label class="sr-only" for="task-input">New learning task</label>
         <input id="task-input" type="text" placeholder="What would you like to learn today?" maxlength="100">
+        <label class="sr-only" for="task-time">Estimated learning time</label>
+        <select id="task-time" aria-describedby="task-time-help">
+          <option value="">Choose time</option>
+          <option value="20 min">20 min</option>
+          <option value="30 min">30 min</option>
+          <option value="40 min">40 min</option>
+          <option value="50 min">50 min</option>
+          <option value="60 min">60 min</option>
+          <option value="custom">Custom time…</option>
+        </select>
+        <label class="sr-only" for="custom-task-time">Custom time in minutes</label>
+        <input id="custom-task-time" class="custom-task-time" type="number" min="1" max="600" step="1" placeholder="Minutes" inputmode="numeric" hidden>
+        <span id="task-time-help" class="sr-only">Choose the estimated time for this learning task.</span>
         <button class="add-task-button" type="submit">+ Add task</button>
       </form>
 
