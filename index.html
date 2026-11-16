@@ -42,6 +42,15 @@
       <form id="task-form" class="task-form">
         <label class="sr-only" for="task-input">New learning task</label>
         <input id="task-input" type="text" placeholder="What would you like to learn today?" maxlength="100">
+        <label class="sr-only" for="task-time">Estimated learning time</label>
+        <select id="task-time" aria-describedby="task-time-help">
+          <option value="">Choose time</option>
+          <option value="15 min">15 min</option>
+          <option value="30 min">30 min</option>
+          <option value="45 min">45 min</option>
+          <option value="1 hour">1 hour</option>
+        </select>
+        <span id="task-time-help" class="sr-only">Choose the estimated time for this learning task.</span>
         <button class="add-task-button" type="submit">+ Add task</button>
       </form>
 

@@ -1,6 +1,7 @@
 // Grow Your Knowledge keeps its state in the browser, so it remains after refreshes.
 const taskForm = document.querySelector("#task-form");
 const taskInput = document.querySelector("#task-input");
+const taskTime = document.querySelector("#task-time");
 const taskList = document.querySelector("#task-list");
 const completedCount = document.querySelector("#completed-count");
 const progressNumber = document.querySelector("#progress-number");
@@ -222,7 +223,7 @@ function updateGardenDisplay() {
   }
 }
 
-function addTask(taskText) {
+function addTask(taskText, timeText) {
   const cleanText = taskText.trim();
 
   if (cleanText === "") {
@@ -230,10 +231,15 @@ function addTask(taskText) {
     return;
   }
 
+  if (timeText === "") {
+    taskFeedback.textContent = "Please choose an estimated learning time.";
+    return;
+  }
+
   tasks.push({
     id: `task-${Date.now()}`,
     text: cleanText,
-    tag: "",
+    tag: timeText,
     completed: false,
     rewardEarned: false
   });
@@ -271,9 +277,14 @@ function resetGarden() {
 
 taskForm.addEventListener("submit", (event) => {
   event.preventDefault();
-  addTask(taskInput.value);
-  taskInput.value = "";
-  taskInput.focus();
+  addTask(taskInput.value, taskTime.value);
+
+  // Clear both choices only after a new task has actually been added.
+  if (taskInput.value.trim() !== "" && taskTime.value !== "") {
+    taskInput.value = "";
+    taskTime.value = "";
+    taskInput.focus();
+  }
 });
 
 taskList.addEventListener("change", (event) => {
