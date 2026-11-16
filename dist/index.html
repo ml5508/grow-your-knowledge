@@ -45,11 +45,15 @@
         <label class="sr-only" for="task-time">Estimated learning time</label>
         <select id="task-time" aria-describedby="task-time-help">
           <option value="">Choose time</option>
-          <option value="15 min">15 min</option>
+          <option value="20 min">20 min</option>
           <option value="30 min">30 min</option>
-          <option value="45 min">45 min</option>
-          <option value="1 hour">1 hour</option>
+          <option value="40 min">40 min</option>
+          <option value="50 min">50 min</option>
+          <option value="60 min">60 min</option>
+          <option value="custom">Custom time…</option>
         </select>
+        <label class="sr-only" for="custom-task-time">Custom time in minutes</label>
+        <input id="custom-task-time" class="custom-task-time" type="number" min="1" max="600" step="1" placeholder="Minutes" inputmode="numeric" hidden>
         <span id="task-time-help" class="sr-only">Choose the estimated time for this learning task.</span>
         <button class="add-task-button" type="submit">+ Add task</button>
       </form>

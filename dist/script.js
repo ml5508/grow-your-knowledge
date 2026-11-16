@@ -2,6 +2,7 @@
 const taskForm = document.querySelector("#task-form");
 const taskInput = document.querySelector("#task-input");
 const taskTime = document.querySelector("#task-time");
+const customTaskTime = document.querySelector("#custom-task-time");
 const taskList = document.querySelector("#task-list");
 const completedCount = document.querySelector("#completed-count");
 const progressNumber = document.querySelector("#progress-number");
@@ -228,12 +229,12 @@ function addTask(taskText, timeText) {
 
   if (cleanText === "") {
     taskFeedback.textContent = "Please type a learning task before adding it.";
-    return;
+    return false;
   }
 
   if (timeText === "") {
     taskFeedback.textContent = "Please choose an estimated learning time.";
-    return;
+    return false;
   }
 
   tasks.push({
@@ -248,6 +249,33 @@ function addTask(taskText, timeText) {
   updateTaskProgress();
   checkForCelebration();
   saveState();
+  return true;
+}
+
+// Return the selected time label. Custom time is entered as a number of minutes.
+function getSelectedTaskTime() {
+  if (taskTime.value !== "custom") {
+    return taskTime.value;
+  }
+
+  const customMinutes = Number(customTaskTime.value);
+
+  if (!Number.isInteger(customMinutes) || customMinutes < 1 || customMinutes > 600) {
+    taskFeedback.textContent = "Please enter a custom time from 1 to 600 minutes.";
+    return "";
+  }
+
+  return `${customMinutes} min`;
+}
+
+// Show the custom-minutes box only when the user chooses Custom time.
+function updateCustomTimeInput() {
+  const isCustomTime = taskTime.value === "custom";
+  customTaskTime.hidden = !isCustomTime;
+
+  if (!isCustomTime) {
+    customTaskTime.value = "";
+  }
 }
 
 function deleteTask(taskId) {
@@ -277,15 +305,20 @@ function resetGarden() {
 
 taskForm.addEventListener("submit", (event) => {
   event.preventDefault();
-  addTask(taskInput.value, taskTime.value);
+  const selectedTime = getSelectedTaskTime();
+  const wasTaskAdded = addTask(taskInput.value, selectedTime);
 
-  // Clear both choices only after a new task has actually been added.
-  if (taskInput.value.trim() !== "" && taskTime.value !== "") {
+  // Clear the form only after a new task has actually been added.
+  if (wasTaskAdded) {
     taskInput.value = "";
     taskTime.value = "";
+    customTaskTime.value = "";
+    updateCustomTimeInput();
     taskInput.focus();
   }
 });
+
+taskTime.addEventListener("change", updateCustomTimeInput);
 
 taskList.addEventListener("change", (event) => {
   if (event.target.matches('input[type="checkbox"]')) {
@@ -319,3 +352,4 @@ renderTasks();
 updateTaskProgress();
 updateGardenDisplay();
 checkForCelebration();
+updateCustomTimeInput();
