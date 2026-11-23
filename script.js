@@ -24,6 +24,9 @@ const plantProgressTrack = document.querySelector("#plant-progress-track");
 const plantProgressFill = document.querySelector("#plant-progress-fill");
 const plantProgressCaption = document.querySelector("#plant-progress-caption");
 const celebration = document.querySelector("#celebration");
+const sunlightSlider = document.querySelector("#sunlight-slider");
+const sunlightValue = document.querySelector("#sunlight-value");
+const plantMoodStatus = document.querySelector("#plant-mood-status");
 
 const storageKey = "growYourKnowledgeState";
 const stages = ["Seed", "Sprout", "Small Plant", "Growing Plant", "Blooming Flower"];
@@ -41,10 +44,13 @@ let availableWaterDrops = 0;
 let totalWaterings = 0;
 let currentStage = 0;
 let celebrationShown = false;
+let sunlightLevel = 50;
+let plantMood = "resting";
+let lastPlantAction = "none";
 
 // Save the complete task and garden state after each meaningful change.
 function saveState() {
-  const savedState = { tasks, availableWaterDrops, totalWaterings, currentStage, celebrationShown };
+  const savedState = { tasks, availableWaterDrops, totalWaterings, currentStage, celebrationShown, sunlightLevel };
   localStorage.setItem(storageKey, JSON.stringify(savedState));
 }
 
@@ -59,6 +65,8 @@ function loadState() {
       totalWaterings = Math.min(8, Math.max(0, Number(savedState.totalWaterings) || 0));
       currentStage = Math.min(stages.length - 1, Math.max(0, Number(savedState.currentStage) || 0));
       celebrationShown = savedState.celebrationShown === true;
+      const savedSunlight = Number(savedState.sunlightLevel);
+      sunlightLevel = Number.isFinite(savedSunlight) ? Math.min(100, Math.max(0, savedSunlight)) : 50;
     }
   } catch (error) {
     console.warn("Saved garden data could not be loaded. Starting fresh.");
@@ -176,8 +184,10 @@ function waterPlant() {
 
   availableWaterDrops -= 1;
   totalWaterings += 1;
+  lastPlantAction = "watered";
   const stageBeforeWatering = currentStage;
   advanceGrowthStage();
+  updatePlantMood();
   updateGardenDisplay();
   playWaterDropAnimation();
 
@@ -201,15 +211,47 @@ function playGrowthAnimation() {
   plant.classList.add("is-growing");
 }
 
+function updatePlantMood() {
+  const hasWater = availableWaterDrops > 0;
+
+  if (lastPlantAction === "watered") {
+    plantMood = "refreshed";
+    plantMoodStatus.textContent = "Plant feeling: Refreshed — thank you for the lovely drink!";
+  } else if (lastPlantAction === "completed-task") {
+    plantMood = "proud";
+    plantMoodStatus.textContent = "Plant feeling: Proud — your learning deserves a little celebration!";
+  } else if (sunlightLevel <= 33) {
+    plantMood = "seeking-sunlight";
+    plantMoodStatus.textContent = "Plant feeling: Cozy — a little more sunlight would feel nice.";
+  } else if (sunlightLevel >= 67) {
+    plantMood = "sunny";
+    plantMoodStatus.textContent = "Plant feeling: Sunny — what a bright learning day!";
+  } else if (hasWater) {
+    plantMood = "hopeful";
+    plantMoodStatus.textContent = "Plant feeling: Hopeful — I am ready whenever you are.";
+  } else {
+    plantMood = "resting";
+    plantMoodStatus.textContent = "Plant feeling: Resting — a quiet moment is okay.";
+  }
+}
+
+function updateSunlightDisplay() {
+  sunlightSlider.value = sunlightLevel;
+  if (sunlightLevel <= 33) sunlightValue.textContent = "Low sunlight";
+  else if (sunlightLevel >= 67) sunlightValue.textContent = "Bright sunlight";
+  else sunlightValue.textContent = "Gentle sunlight";
+}
+
 function updateGardenDisplay() {
   const isBlooming = currentStage === stages.length - 1;
   const dropWord = availableWaterDrops === 1 ? "water drop" : "water drops";
   const growthPercent = Math.round((totalWaterings / 8) * 100);
+  const sunlightClass = sunlightLevel <= 33 ? "sunlight-low" : sunlightLevel >= 67 ? "sunlight-bright" : "sunlight-gentle";
 
   growthStage.textContent = stages[currentStage];
   waterCount.textContent = `💧 ${availableWaterDrops} ${dropWord} available`;
-  gardenScene.className = `garden-scene ${stageClasses[currentStage]}`;
-  gardenScene.setAttribute("aria-label", `${stages[currentStage]} in a warm brown pot`);
+  gardenScene.className = `garden-scene ${stageClasses[currentStage]} mood-${plantMood} ${sunlightClass}`;
+  gardenScene.setAttribute("aria-label", `${stages[currentStage]} in a warm brown pot, feeling ${plantMood.replace("-", " ")}`);
   stageTooltip.textContent = `Current stage: ${stages[currentStage]}`;
   waterPlantButton.disabled = availableWaterDrops === 0 || isBlooming;
   plantProgressFill.style.width = `${growthPercent}%`;
@@ -247,6 +289,9 @@ function addTask(taskText, timeText) {
   taskFeedback.textContent = "Your new learning task has been added.";
   renderTasks();
   updateTaskProgress();
+  lastPlantAction = "none";
+  updatePlantMood();
+  updateGardenDisplay();
   checkForCelebration();
   saveState();
   return true;
@@ -296,7 +341,9 @@ function resetGarden() {
     totalWaterings = 0;
     currentStage = 0;
     celebrationShown = false;
+    lastPlantAction = "none";
     taskFeedback.textContent = "Your garden was reset. Your learning tasks are still here.";
+    updatePlantMood();
     updateGardenDisplay();
     checkForCelebration();
     saveState();
@@ -320,6 +367,15 @@ taskForm.addEventListener("submit", (event) => {
 
 taskTime.addEventListener("change", updateCustomTimeInput);
 
+sunlightSlider.addEventListener("input", () => {
+  sunlightLevel = Number(sunlightSlider.value);
+  lastPlantAction = "none";
+  updateSunlightDisplay();
+  updatePlantMood();
+  updateGardenDisplay();
+  saveState();
+});
+
 taskList.addEventListener("change", (event) => {
   if (event.target.matches('input[type="checkbox"]')) {
     const task = tasks.find((item) => item.id === event.target.dataset.taskId);
@@ -327,7 +383,9 @@ taskList.addEventListener("change", (event) => {
     if (task) {
       task.completed = event.target.checked;
       awardWaterDrop(task);
+      lastPlantAction = task.completed ? "completed-task" : "none";
       updateTaskProgress();
+      updatePlantMood();
       updateGardenDisplay();
       checkForCelebration();
       saveState();
@@ -350,6 +408,8 @@ plant.addEventListener("animationend", () => plant.classList.remove("is-growing"
 loadState();
 renderTasks();
 updateTaskProgress();
+updateSunlightDisplay();
+updatePlantMood();
 updateGardenDisplay();
 checkForCelebration();
 updateCustomTimeInput();
