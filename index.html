@@ -92,6 +92,15 @@
           <span id="water-drop-animation" class="water-drop-animation" aria-hidden="true">💧</span>
         </div>
         <p class="garden-note">Complete a task to earn a water drop, then use it to care for your plant.</p>
+        <div class="sunlight-controls">
+          <div>
+            <label for="sunlight-slider">Sunlight</label>
+            <p id="sunlight-value" class="sunlight-value">Gentle sunlight</p>
+          </div>
+          <input id="sunlight-slider" type="range" min="0" max="100" value="50" aria-describedby="sunlight-help">
+          <span id="sunlight-help" class="sr-only">Move the slider to choose how much sunlight the plant receives.</span>
+        </div>
+        <p id="plant-mood-status" class="plant-mood-status" aria-live="polite">Plant feeling: Resting — a quiet moment is okay.</p>
         <div class="water-controls">
           <p id="water-count" class="water-count" aria-live="polite">💧 0 water drops available</p>
           <div class="water-actions">
